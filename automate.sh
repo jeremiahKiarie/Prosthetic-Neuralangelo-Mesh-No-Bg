@@ -73,7 +73,7 @@ wait $DONE_PID
 RESULT_MESH="res.ply"
 workdir="/workspace/neuralangelo"
 
-if docker exec -it -w $workdir ${NEURAL} test -e ${RESULT_MESH}; then
+if docker exec -w $workdir ${NEURAL} test -e ${RESULT_MESH}; then
   # Check if the final file exists
   docker cp ${NEURAL}:$workdir/$RESULT_MESH .
   echo "Final mesh has been copied to the current working directory."
