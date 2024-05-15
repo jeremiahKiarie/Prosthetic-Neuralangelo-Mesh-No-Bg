@@ -19,7 +19,23 @@ bash automate.sh video_name.mp4
 ```
 ---
 
-Running the above command should run the entire pipeline above and generate a mesh in the current working directory. Note that this entire process can take a timeframe of about 24 hours.
+Running the above command should run the entire pipeline above and generate a mesh in the current working directory. Note that this entire process can take a timeframe of about 24 hours.<br>
+
+In the scenario that you are doing anything via ssh, it is best to be able to run the above command with nohup in case your connection times out. To do that, do the following:
+
+---
+```
+nohup bash automate.sh video_name.mp4 > logfile.log 2>&1 &
+```
+---
+
+If you have a connection reset and you login to the remote workstation, to see the state of your training, run:
+
+---
+```
+tail -f -n 1 /path/to/your/logfile.log
+```
+---
 
 
 
