@@ -32,7 +32,7 @@ wait $PID
 
 
 # Get the best model
-max_num = 0
+max_num=0
 best_mod=""
 
 # Go through all the checkpoint files
