@@ -1,5 +1,5 @@
 # Automation of Prosthetic Mesh Generation using Neuralangelo
-This work represents the 3D prosthetic mesh generation for the [2025 ASME Journal Paper on Accessible Digital Reconstruction and Mechanical Prediction of 3D-Printed Prosthetics](https://asmedigitalcollection.asme.org/mechanicaldesign/article/doi/10.1115/1.4067716/1212255). It was done in collaboration with the [AiPEX (Artificial Intelligence in Products Engineered for X) lab at Carnegie Mellon University](https://www.meche.engineering.cmu.edu/faculty/aipex.html) and leverages NVIDIA's Neuralangelo algorithm to reconstruct a residual body part in the form of a 3D mesh.
+This work represents the 3D prosthetic mesh generation implementation for the [2025 ASME Journal Paper on Accessible Digital Reconstruction and Mechanical Prediction of 3D-Printed Prosthetics](https://asmedigitalcollection.asme.org/mechanicaldesign/article/doi/10.1115/1.4067716/1212255). It was done in collaboration with the [AiPEX (Artificial Intelligence in Products Engineered for X) lab at Carnegie Mellon University](https://www.meche.engineering.cmu.edu/faculty/aipex.html) and leverages NVIDIA's Neuralangelo algorithm to reconstruct a residual body part in the form of a 3D mesh.
 
 ---
 **Basic Pipeline**
