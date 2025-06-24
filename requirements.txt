@@ -20,7 +20,7 @@ pillow
 plotly
 pyequilib
 pyexr
-PyMCubes
+PyMCubes<=0.1.4
 pyquaternion
 pyyaml
 requests
@@ -32,4 +32,4 @@ tensorboard
 termcolor
 tqdm
 trimesh
-wandb
+wandb<=0.17.5

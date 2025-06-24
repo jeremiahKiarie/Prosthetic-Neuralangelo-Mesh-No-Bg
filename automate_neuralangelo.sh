@@ -1,11 +1,6 @@
 # AUTHOR: Chukwuemeka L. Nkama
 # Date: 1/27/2024
 
-# Build Colmap image if it does not exist
-if [ -z "$(docker images -q colmap_img)" ]; then
-  docker build -t colmap_img -f Dockerfile-colmap .
-fi
-
 # Build Neuralangelo image if it does not exist
 if [ -z "$(docker images -q neural_img)" ]; then
   docker build -t neural_img -f Dockerfile-neuralangelo .
@@ -13,33 +8,9 @@ fi
 
 # Define neuralangelo container
 NEURAL="container_neuralangelo"
-COLMAP="container_colmap"
 
 # Name of video
 VID=$1
-LOG_FILE="$(pwd)/${VID%.*}.log" # Define log file path and name
-SCRIPT="$(pwd)/automate.sh"
-
-# start colmap container
-if [ "$(docker ps -aq -f name=${COLMAP})" ]; then
-  # if container exists, start it
-  docker start ${COLMAP}
-else
-  # if container doesn't exist, create it
-  docker run -d --gpus all --ipc=host --name ${COLMAP} colmap_img tail -f /dev/null
-fi
-
-# Transfer video and get the colmap poses
-docker cp ${VID} ${COLMAP}:/
-docker cp ./colmap.sh ${COLMAP}:/
-docker cp ./preprocess.sh ${COLMAP}:/
-docker exec ${COLMAP} bash -c "source colmap.sh ${VID}"
-
-# copy neuralangelo folder to current directory
-docker cp ${COLMAP}:/neuralangelo .
-
-# stop colmap container 
-docker stop ${COLMAP}
 
 # start neural container 
 if [ "$(docker ps -aq -f name=${NEURAL})" ]; then
@@ -50,8 +21,15 @@ else
   docker run -d --gpus all --ipc=host --name ${NEURAL} neural_img tail -f /dev/null
 fi
 
+# Create workspace folder, if exists will ignore
+docker exec ${NEURAL} bash -c "mkdir /workspace"
+
 # transfer neuralangelo directory to main training container
-docker cp ./neuralangelo ${NEURAL}:/workspace/
+docker cp ./neuralangelo ${NEURAL}:/workspace/ &
+wait
+
+# some recent git versions flag folders with different user privileges, add folder as a safe directory
+docker exec ${NEURAL} bash -c "git config --global --add safe.directory /workspace/neuralangelo"
 
 # transfer preprocessing script 
 docker cp ./preprocess.sh ${NEURAL}:/workspace/neuralangelo/projects/neuralangelo/scripts/
@@ -60,13 +38,13 @@ docker cp ./preprocess.sh ${NEURAL}:/workspace/neuralangelo/projects/neuralangel
 docker cp ./processor.py ${NEURAL}:/workspace/neuralangelo/
 
 # Delete neuralangelo directory
-rm -rf ./neuralangelo
+# rm -rf ./neuralangelo
 
 # Copy reconstruction script
 docker cp ./reconstruct.sh ${NEURAL}:/workspace/neuralangelo/
 
 # Train the model and extract the mesh
-docker exec --workdir /workspace/neuralangelo ${NEURAL} bash -c "source reconstruct.sh ${VID}"
+docker exec --workdir /workspace/neuralangelo ${NEURAL} bash -c "source reconstruct.sh ${VID}" &
 
 # wait for mesh to be generated
 DONE_PID=$!
