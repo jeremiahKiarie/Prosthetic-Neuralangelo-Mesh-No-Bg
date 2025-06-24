@@ -30,6 +30,7 @@ fi
 # Transfer video and get the colmap poses
 docker cp ${VID} ${COLMAP}:/
 docker cp ./colmap.sh ${COLMAP}:/
+docker cp ./preprocess.sh ${COLMAP}:/
 docker exec ${COLMAP} bash -c "source colmap.sh ${VID}"
 
 # copy neuralangelo folder to current directory
